@@ -42,17 +42,17 @@ void uninit_plugin(void *);
 /*
  * Analysis functions can be defined here
  */
-static int after_block_translate(CPUArchState *env, TranslationBlock *tb) 
+static int _after_block_translate(CPUArchState *env, TranslationBlock *tb) 
 {
     return 0;
 }
 
-static int before_block_exec(CPUState *env, TranslationBlock *tb) 
+static int _before_block_exec(CPUState *env, TranslationBlock *tb) 
 {
     return 0;
 }
 
-static int after_block_exec(CPUState* cpu, TranslationBlock *tb, uint8_t exitCode) 
+static int _after_block_exec(CPUState* cpu, TranslationBlock *tb, uint8_t exitCode) 
 {
     return 0;
 }
@@ -69,17 +69,19 @@ bool init_plugin(void *self)
     // https://github.com/panda-re/panda/blob/master/panda/docs/manual.md#argument-handling
     //
     panda_arg_list *args = panda_get_args("crapr_test");
+    const char *func_args_str = panda_parse_string_opt(args, "fargs", nullptr, "Hexidecimal, dash delimited arguments for the function to call.");
+    printf("[+] func_args : %s\n", func_args_str);
 
     //
     // Define callback functions
     // More callbacks can be found in panda/plugin.h file and 
     // https://github.com/panda-re/panda/blob/master/panda/docs/manual.md#callback-and-plugin-management
     //
-    pcb.after_block_translate = after_block_translate;
+    pcb.after_block_translate = _after_block_translate;
     panda_register_callback(self, PANDA_CB_AFTER_BLOCK_TRANSLATE, pcb);
-    pcb.before_block_exec = before_block_exec;
+    pcb.before_block_exec = _before_block_exec;
     panda_register_callback(self, PANDA_CB_BEFORE_BLOCK_EXEC, pcb);
-    pcb.after_block_exec = after_block_exec;
+    pcb.after_block_exec = _after_block_exec;
     panda_register_callback(self, PANDA_CB_AFTER_BLOCK_EXEC, pcb);
 
     return true;
