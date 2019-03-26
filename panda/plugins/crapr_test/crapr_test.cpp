@@ -42,11 +42,6 @@ void uninit_plugin(void *);
 /*
  * Analysis functions can be defined here
  */
-static int _after_block_translate(CPUArchState *env, TranslationBlock *tb) 
-{
-    return 0;
-}
-
 static int _before_block_exec(CPUState *env, TranslationBlock *tb) 
 {
     return 0;
@@ -77,8 +72,6 @@ bool init_plugin(void *self)
     // More callbacks can be found in panda/plugin.h file and 
     // https://github.com/panda-re/panda/blob/master/panda/docs/manual.md#callback-and-plugin-management
     //
-    pcb.after_block_translate = _after_block_translate;
-    panda_register_callback(self, PANDA_CB_AFTER_BLOCK_TRANSLATE, pcb);
     pcb.before_block_exec = _before_block_exec;
     panda_register_callback(self, PANDA_CB_BEFORE_BLOCK_EXEC, pcb);
     pcb.after_block_exec = _after_block_exec;
